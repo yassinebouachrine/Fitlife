@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Launch background for Android splash screen -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Dark background matching AppColors.backgroundDark (#0D0F14) -->
+    <item android:drawable="@color/launch_background"/>
+</layer-list>
