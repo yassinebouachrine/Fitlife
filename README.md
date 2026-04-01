@@ -1,4 +1,4 @@
-# Lifevora — AI Fitness & Nutrition 🏋️‍♂️
+# Lifevora — AI Fitness & Nutrition 
 
 **Lifevora** is a Flutter fitness app powered by AI, combining smart nutrition tracking, an AI coach, and a premium dark UI experience.
 
