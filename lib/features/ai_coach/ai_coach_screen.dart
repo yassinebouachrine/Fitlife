@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_spacing.dart';
-import '../../core/theme/app_typography.dart';
 
 class AiCoachScreen extends StatefulWidget {
   const AiCoachScreen({super.key});
@@ -11,367 +9,264 @@ class AiCoachScreen extends StatefulWidget {
 }
 
 class _AiCoachScreenState extends State<AiCoachScreen> {
-  final TextEditingController _messageController = TextEditingController();
-  final List<_ChatMessage> _messages = [
-    _ChatMessage(
-      text:
-          "Hey! I'm NEXUS — your elite AI fitness coach. I'm here to help you dominate your goals. Tell me what you need — workout plans, nutrition advice, technique tips, or just some motivation. What's on your agenda today? 💪",
-      isUser: false,
-    ),
+  final _controller = TextEditingController();
+  final List<Map<String, dynamic>> _messages = [
+    {
+      'text':
+          "Hey! I'm NEXUS — your AI fitness coach. Tell me what you need: workout plans, nutrition tips, or motivation. What's on your agenda today? 💪",
+      'isUser': false,
+    },
   ];
 
-  @override
-  void dispose() {
-    _messageController.dispose();
-    super.dispose();
-  }
-
-  void _sendMessage() {
-    final text = _messageController.text.trim();
-    if (text.isEmpty) return;
-
+  void _send() {
+    final t = _controller.text.trim();
+    if (t.isEmpty) return;
     setState(() {
-      _messages.add(_ChatMessage(text: text, isUser: true));
-      _messageController.clear();
+      _messages.add({'text': t, 'isUser': true});
+      _controller.clear();
     });
 
-    // Simulate AI response
     Future.delayed(const Duration(seconds: 1), () {
-      if (mounted) {
-        setState(() {
-          _messages.add(_ChatMessage(
-            text:
-                "Great question! Based on your profile as a Level 12 Elite Warrior, I'd recommend focusing on progressive overload this week. Here's what I suggest:\n\n🎯 Increase your bench press by 2.5kg\n🎯 Add one extra set to your compound movements\n🎯 Keep rest periods between 60-90 seconds\n\nWant me to create a detailed plan for this?",
-            isUser: false,
-          ));
+      if (!mounted) return;
+      setState(() {
+        _messages.add({
+          'text':
+              'Great question! Based on your Level 12 profile, I recommend increasing your compound lifts by 2.5kg this week. Want a detailed plan?',
+          'isUser': false,
         });
-      }
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF0F1330), AppColors.background],
-            stops: [0.0, 0.3],
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              _buildHeader(),
-              Expanded(child: _buildChatArea()),
-              _buildSuggestions(),
-              _buildInputArea(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      child: Row(
-        children: [
-          Container(
-            width: 46,
-            height: 46,
-            decoration: BoxDecoration(
-              gradient: AppColors.primaryGradient,
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: const Icon(
-              Icons.psychology_rounded,
-              color: Colors.white,
-              size: 26,
-            ),
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      'NEXUS AI Coach',
-                      style: AppTypography.headingSmall.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                        color: AppColors.success,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  'Powered by Advanced AI • Always evolving',
-                  style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.textTertiary,
-                    fontSize: 11,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: AppColors.surfaceLight,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Icon(
-              Icons.refresh_rounded,
-              color: AppColors.textSecondary,
-              size: 20,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildChatArea() {
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      itemCount: _messages.length,
-      reverse: false,
-      itemBuilder: (context, index) {
-        final message = _messages[index];
-        return _buildMessageBubble(message);
-      },
-    );
-  }
-
-  Widget _buildMessageBubble(_ChatMessage message) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.md),
-      child: Row(
-        mainAxisAlignment:
-            message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (!message.isUser) ...[
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(
-                Icons.psychology_rounded,
-                color: Colors.white,
-                size: 18,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-          ],
-          Flexible(
-            child: Container(
-              padding: const EdgeInsets.all(AppSpacing.base),
-              decoration: BoxDecoration(
-                color: message.isUser
-                    ? AppColors.primary.withOpacity(0.2)
-                    : AppColors.surfaceLight,
-                borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(18),
-                  topRight: const Radius.circular(18),
-                  bottomLeft: Radius.circular(message.isUser ? 18 : 4),
-                  bottomRight: Radius.circular(message.isUser ? 4 : 18),
-                ),
-                border: Border.all(
-                  color: message.isUser
-                      ? AppColors.primary.withOpacity(0.3)
-                      : AppColors.textTertiary.withOpacity(0.1),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Header
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
                 children: [
-                  if (!message.isUser)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 6),
-                      child: Text(
-                        'NEXUS',
-                        style: AppTypography.labelSmall.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w700,
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      gradient: AppColors.primaryGradient,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(Icons.psychology_rounded,
+                        color: Colors.white, size: 24),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text('NEXUS AI Coach',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  color: theme.colorScheme.onSurface,
+                                )),
+                            const SizedBox(width: 6),
+                            Container(
+                              width: 8,
+                              height: 8,
+                              decoration: const BoxDecoration(
+                                color: AppColors.secondary,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text('Powered by Advanced AI',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: theme.colorScheme.onSurface
+                                  .withOpacity(0.4),
+                            )),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.refresh_rounded,
+                        color: theme.colorScheme.onSurface.withOpacity(0.5)),
+                    onPressed: () {
+                      setState(() {
+                        _messages.clear();
+                        _messages.add({
+                          'text':
+                              "Chat reset! How can I help you today? 💪",
+                          'isUser': false,
+                        });
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Divider(
+              color: theme.colorScheme.outline.withOpacity(0.2),
+              height: 1,
+            ),
+            // Messages
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: _messages.length,
+                itemBuilder: (_, i) {
+                  final m = _messages[i];
+                  return _bubble(theme, m['text'], m['isUser']);
+                },
+              ),
+            ),
+            // Suggestions
+            SizedBox(
+              height: 40,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                children: [
+                  _suggestion(theme, Icons.calendar_today_rounded,
+                      'Weekly plan'),
+                  const SizedBox(width: 8),
+                  _suggestion(
+                      theme, Icons.restaurant_rounded, 'Nutrition tips'),
+                  const SizedBox(width: 8),
+                  _suggestion(
+                      theme, Icons.trending_up_rounded, 'Track progress'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            // Input
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surface,
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: theme.colorScheme.outline.withOpacity(0.3),
                         ),
                       ),
+                      child: TextField(
+                        controller: _controller,
+                        style: TextStyle(
+                          color: theme.colorScheme.onSurface,
+                          fontSize: 14,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: 'Ask NEXUS anything...',
+                          border: InputBorder.none,
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 12),
+                          hintStyle: TextStyle(
+                            color: theme.colorScheme.onSurface
+                                .withOpacity(0.35),
+                          ),
+                        ),
+                        onSubmitted: (_) => _send(),
+                      ),
                     ),
-                  Text(
-                    message.text,
-                    style: AppTypography.bodyMedium.copyWith(
-                      color: AppColors.textPrimary,
-                      height: 1.5,
+                  ),
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: _send,
+                    child: Container(
+                      width: 46,
+                      height: 46,
+                      decoration: BoxDecoration(
+                        gradient: AppColors.primaryGradient,
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Icon(Icons.send_rounded,
+                          color: Colors.white, size: 20),
                     ),
                   ),
                 ],
-              ),
-            ),
-          ),
-          if (message.isUser) ...[
-            const SizedBox(width: AppSpacing.sm),
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: AppColors.accent.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(
-                Icons.person_rounded,
-                color: AppColors.accent,
-                size: 18,
               ),
             ),
           ],
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildSuggestions() {
-    final suggestions = [
-      {'icon': Icons.calendar_today_rounded, 'text': 'Generate weekly plan'},
-      {'icon': Icons.restaurant_rounded, 'text': 'Optimize nutrition'},
-      {'icon': Icons.trending_up_rounded, 'text': 'Track progress'},
-      {'icon': Icons.lightbulb_rounded, 'text': 'Technique tips'},
-    ];
-
-    return SizedBox(
-      height: 44,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-        itemCount: suggestions.length,
-        separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.sm),
-        itemBuilder: (context, index) {
-          final suggestion = suggestions[index];
-          return GestureDetector(
-            onTap: () {
-              _messageController.text = suggestion['text'] as String;
-              _sendMessage();
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.sm,
-              ),
-              decoration: BoxDecoration(
-                color: AppColors.surfaceLight,
-                borderRadius: BorderRadius.circular(AppSpacing.radiusRound),
-                border: Border.all(
-                  color: AppColors.textTertiary.withOpacity(0.12),
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    suggestion['icon'] as IconData,
-                    size: 16,
-                    color: AppColors.primary,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    suggestion['text'] as String,
-                    style: AppTypography.labelMedium.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildInputArea() {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.surfaceLight,
-                borderRadius: BorderRadius.circular(AppSpacing.radiusRound),
-                border: Border.all(
-                  color: AppColors.textTertiary.withOpacity(0.12),
-                ),
-              ),
-              child: TextField(
-                controller: _messageController,
-                style: AppTypography.bodyMedium.copyWith(
-                  color: AppColors.textPrimary,
-                ),
-                decoration: InputDecoration(
-                  hintText: 'Ask NEXUS anything...',
-                  hintStyle: AppTypography.bodyMedium.copyWith(
-                    color: AppColors.textTertiary,
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                    vertical: AppSpacing.md,
-                  ),
-                ),
-                onSubmitted: (_) => _sendMessage(),
-              ),
-            ),
+  Widget _bubble(ThemeData theme, String text, bool isUser) {
+    return Align(
+      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(14),
+        constraints:
+            BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.78),
+        decoration: BoxDecoration(
+          color: isUser
+              ? theme.colorScheme.primary.withOpacity(0.1)
+              : theme.colorScheme.surface,
+          borderRadius: BorderRadius.only(
+            topLeft: const Radius.circular(18),
+            topRight: const Radius.circular(18),
+            bottomLeft: Radius.circular(isUser ? 18 : 4),
+            bottomRight: Radius.circular(isUser ? 4 : 18),
           ),
-          const SizedBox(width: AppSpacing.md),
-          GestureDetector(
-            onTap: _sendMessage,
-            child: Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withOpacity(0.4),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.send_rounded,
-                color: Colors.white,
-                size: 20,
-              ),
-            ),
+          border: Border.all(
+            color: isUser
+                ? theme.colorScheme.primary.withOpacity(0.2)
+                : theme.colorScheme.outline.withOpacity(0.3),
           ),
-        ],
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 14,
+            color: theme.colorScheme.onSurface,
+            height: 1.5,
+          ),
+        ),
       ),
     );
   }
-}
 
-class _ChatMessage {
-  final String text;
-  final bool isUser;
-
-  _ChatMessage({required this.text, required this.isUser});
+  Widget _suggestion(ThemeData theme, IconData icon, String label) {
+    return GestureDetector(
+      onTap: () {
+        _controller.text = label;
+        _send();
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: theme.colorScheme.outline.withOpacity(0.3),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 14, color: theme.colorScheme.primary),
+            const SizedBox(width: 6),
+            Text(label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: theme.colorScheme.onSurface.withOpacity(0.7),
+                )),
+          ],
+        ),
+      ),
+    );
+  }
 }

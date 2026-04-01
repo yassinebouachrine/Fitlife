@@ -1,598 +1,427 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_spacing.dart';
-import '../../core/theme/app_typography.dart';
-import '../../core/widgets/gradient_card.dart';
+import '../../core/theme/theme_provider.dart';
 import '../../core/constants/app_constants.dart';
+import '../../core/widgets/app_card.dart';
+import '../auth/login_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF0F1330), AppColors.background],
-            stops: [0.0, 0.4],
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                const SizedBox(height: AppSpacing.lg),
-                _buildProfileHeader(),
-                const SizedBox(height: AppSpacing.xl),
-                _buildStats(),
-                const SizedBox(height: AppSpacing.xl),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                  ),
-                  child: Column(
-                    children: [
-                      _buildAchievements(),
-                      const SizedBox(height: AppSpacing.xl),
-                      _buildFitnessProfile(),
-                      const SizedBox(height: AppSpacing.xl),
-                      _buildSettings(),
-                      const SizedBox(height: AppSpacing.xl),
-                      _buildLogoutButton(context),
-                      const SizedBox(height: AppSpacing.huge),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-  Widget _buildProfileHeader() {
-    return Column(
-      children: [
-        // Settings icon
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
             children: [
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  color: AppColors.surfaceLight,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: AppColors.textTertiary.withOpacity(0.1),
-                  ),
-                ),
-                child: const Icon(
-                  Icons.settings_rounded,
-                  color: AppColors.textSecondary,
-                  size: 20,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: AppSpacing.lg),
-        // Avatar
-        Stack(
-          alignment: Alignment.bottomRight,
-          children: [
-            Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withOpacity(0.4),
-                    blurRadius: 24,
-                    offset: const Offset(0, 8),
+              const SizedBox(height: 16),
+              // Top bar
+              Row(
+                children: [
+                  Text('Profile',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                        color: theme.colorScheme.onSurface,
+                      )),
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surface,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: theme.colorScheme.outline.withOpacity(0.3),
+                      ),
+                    ),
+                    child: Icon(Icons.settings_rounded,
+                        size: 20,
+                        color: theme.colorScheme.onSurface.withOpacity(0.6)),
                   ),
                 ],
               ),
-              child: const Icon(
-                Icons.person_rounded,
-                color: Colors.white,
-                size: 48,
-              ),
-            ),
-            Container(
-              width: 34,
-              height: 34,
-              decoration: BoxDecoration(
-                color: AppColors.xpGold,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: AppColors.background,
-                  width: 3,
-                ),
-              ),
-              child: const Icon(
-                Icons.edit_rounded,
-                color: Colors.white,
-                size: 16,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.base),
-        Text(
-          AppConstants.userFullName,
-          style: AppTypography.displaySmall.copyWith(
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.lg,
-            vertical: AppSpacing.sm,
-          ),
-          decoration: BoxDecoration(
-            gradient: AppColors.coolGradient,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusRound),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.emoji_events_rounded,
-                color: Colors.white,
-                size: 16,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                'Level ${AppConstants.userLevel} — ${AppConstants.userTitle}',
-                style: AppTypography.labelMedium.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStats() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: Row(
-        children: [
-          Expanded(
-            child: _ProfileStatCard(
-              icon: Icons.fitness_center_rounded,
-              value: '${AppConstants.userWorkouts}',
-              label: 'Workouts',
-              color: AppColors.primary,
-            ),
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: _ProfileStatCard(
-              icon: Icons.local_fire_department_rounded,
-              value: '${AppConstants.userStreak}d',
-              label: 'Streak',
-              color: AppColors.streakFire,
-            ),
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: _ProfileStatCard(
-              icon: Icons.bolt_rounded,
-              value: '${AppConstants.userXP}',
-              label: 'XP',
-              color: AppColors.xpGold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAchievements() {
-    final achievements = [
-      {'icon': Icons.local_fire_department_rounded, 'label': 'Hot Streak', 'color': AppColors.streakFire},
-      {'icon': Icons.fitness_center_rounded, 'label': 'Iron Will', 'color': AppColors.primary},
-      {'icon': Icons.emoji_events_rounded, 'label': 'Champion', 'color': AppColors.xpGold},
-      {'icon': Icons.bolt_rounded, 'label': 'Speed Demon', 'color': AppColors.warning},
-      {'icon': Icons.gps_fixed_rounded, 'label': 'Focused', 'color': AppColors.error},
-    ];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Achievements', style: AppTypography.headingMedium),
-        const SizedBox(height: AppSpacing.md),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: achievements.map((achievement) {
-            return Column(
-              children: [
-                Container(
-                  width: 52,
-                  height: 52,
-                  decoration: BoxDecoration(
-                    color: (achievement['color'] as Color).withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: (achievement['color'] as Color).withOpacity(0.25),
-                      width: 1.5,
+              const SizedBox(height: 28),
+              // Avatar
+              Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  Container(
+                    width: 96,
+                    height: 96,
+                    decoration: BoxDecoration(
+                      gradient: AppColors.primaryGradient,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withOpacity(0.3),
+                          blurRadius: 20,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
                     ),
+                    child: const Icon(Icons.person_rounded,
+                        color: Colors.white, size: 44),
                   ),
-                  child: Icon(
-                    achievement['icon'] as IconData,
-                    color: achievement['color'] as Color,
-                    size: 26,
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: theme.scaffoldBackgroundColor,
+                        width: 3,
+                      ),
+                    ),
+                    child: const Icon(Icons.edit_rounded,
+                        color: Colors.white, size: 14),
                   ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  achievement['label'] as String,
-                  style: AppTypography.labelSmall.copyWith(
-                    color: AppColors.textTertiary,
-                    fontSize: 10,
-                  ),
-                ),
-              ],
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildFitnessProfile() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Fitness Profile', style: AppTypography.headingMedium),
-            GestureDetector(
-              onTap: () {},
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.sm,
-                ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text(AppConstants.userFullName,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: theme.colorScheme.onSurface,
+                  )),
+              const SizedBox(height: 6),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                  gradient: AppColors.primaryGradient,
+                  borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  'Edit',
-                  style: AppTypography.labelMedium.copyWith(
-                    color: AppColors.primary,
+                  'Level ${AppConstants.userLevel} — ${AppConstants.userTitle}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.md),
-        GradientCard(
-          padding: EdgeInsets.zero,
-          child: Column(
-            children: [
-              _ProfileInfoRow(
-                icon: Icons.gps_fixed_rounded,
-                iconColor: AppColors.error,
-                label: 'Goal',
-                value: 'Build Muscle',
+              const SizedBox(height: 24),
+              // Stats row
+              Row(
+                children: [
+                  _statBox(theme, Icons.fitness_center_rounded, '142',
+                      'Workouts', AppColors.primary),
+                  const SizedBox(width: 10),
+                  _statBox(theme, Icons.local_fire_department_rounded, '18d',
+                      'Streak', AppColors.streak),
+                  const SizedBox(width: 10),
+                  _statBox(theme, Icons.bolt_rounded, '2,840', 'XP',
+                      AppColors.accent),
+                ],
               ),
-              _divider(),
-              _ProfileInfoRow(
-                icon: Icons.bar_chart_rounded,
-                iconColor: AppColors.primary,
-                label: 'Level',
-                value: 'Intermediate',
+              const SizedBox(height: 24),
+              // Achievements
+              _sectionTitle(theme, 'Achievements'),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _achievement(theme, Icons.local_fire_department_rounded,
+                      'Hot Streak', AppColors.streak),
+                  _achievement(theme, Icons.fitness_center_rounded,
+                      'Iron Will', AppColors.primary),
+                  _achievement(theme, Icons.emoji_events_rounded, 'Champion',
+                      AppColors.accent),
+                  _achievement(theme, Icons.bolt_rounded, 'Speed',
+                      AppColors.warning),
+                  _achievement(theme, Icons.gps_fixed_rounded, 'Focused',
+                      AppColors.error),
+                ],
               ),
-              _divider(),
-              _ProfileInfoRow(
-                icon: Icons.monitor_weight_rounded,
-                iconColor: AppColors.accent,
-                label: 'Weight',
-                value: '${AppConstants.userWeight} kg',
+              const SizedBox(height: 24),
+              // Fitness Profile
+              Row(
+                children: [
+                  _sectionTitle(theme, 'Fitness Profile'),
+                  const Spacer(),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text('Edit',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: theme.colorScheme.primary,
+                        )),
+                  ),
+                ],
               ),
-              _divider(),
-              _ProfileInfoRow(
-                icon: Icons.height_rounded,
-                iconColor: AppColors.info,
-                label: 'Height',
-                value: '${AppConstants.userHeight} cm',
+              const SizedBox(height: 12),
+              AppCard(
+                padding: EdgeInsets.zero,
+                child: Column(
+                  children: [
+                    _infoRow(theme, Icons.gps_fixed_rounded, 'Goal',
+                        'Build Muscle', AppColors.error),
+                    _div(theme),
+                    _infoRow(theme, Icons.bar_chart_rounded, 'Level',
+                        'Intermediate', AppColors.primary),
+                    _div(theme),
+                    _infoRow(theme, Icons.monitor_weight_rounded, 'Weight',
+                        '${AppConstants.userWeight} kg', AppColors.secondary),
+                    _div(theme),
+                    _infoRow(theme, Icons.height_rounded, 'Height',
+                        '${AppConstants.userHeight} cm', AppColors.info),
+                  ],
+                ),
               ),
-              _divider(),
-              _ProfileInfoRow(
-                icon: Icons.cake_rounded,
-                iconColor: AppColors.warning,
-                label: 'Age',
-                value: '28 years',
+              const SizedBox(height: 24),
+              // Settings
+              _sectionTitle(theme, 'Settings'),
+              const SizedBox(height: 12),
+              AppCard(
+                padding: EdgeInsets.zero,
+                child: Column(
+                  children: [
+                    _settingToggle(theme, Icons.dark_mode_rounded,
+                        'Dark Mode', isDark, (val) {
+                      ThemeProvider.instance.toggleTheme();
+                    }),
+                    _div(theme),
+                    _settingRow(
+                        theme, Icons.notifications_none_rounded, 'Notifications'),
+                    _div(theme),
+                    _settingRow(
+                        theme, Icons.language_rounded, 'Language'),
+                    _div(theme),
+                    _settingRow(
+                        theme, Icons.lock_outline_rounded, 'Privacy'),
+                    _div(theme),
+                    _settingRow(
+                        theme, Icons.help_outline_rounded, 'Help'),
+                  ],
+                ),
               ),
+              const SizedBox(height: 24),
+              // Logout
+              GestureDetector(
+                onTap: () => Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                ),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  decoration: BoxDecoration(
+                    color: AppColors.error.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: AppColors.error.withOpacity(0.2),
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.logout_rounded,
+                          color: AppColors.error, size: 18),
+                      SizedBox(width: 8),
+                      Text('Sign Out',
+                          style: TextStyle(
+                            color: AppColors.error,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          )),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 40),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 
-  Widget _divider() {
-    return Container(
-      height: 1,
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.base),
-      color: AppColors.textTertiary.withOpacity(0.08),
-    );
-  }
-
-  Widget _buildSettings() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Settings', style: AppTypography.headingMedium),
-        const SizedBox(height: AppSpacing.md),
-        GradientCard(
-          padding: EdgeInsets.zero,
-          child: Column(
-            children: [
-              _SettingsRow(
-                icon: Icons.notifications_none_rounded,
-                label: 'Notifications',
-                hasToggle: true,
-              ),
-              _divider(),
-              _SettingsRow(
-                icon: Icons.dark_mode_rounded,
-                label: 'Dark Mode',
-                hasToggle: true,
-                isEnabled: true,
-              ),
-              _divider(),
-              _SettingsRow(
-                icon: Icons.language_rounded,
-                label: 'Language',
-                value: 'English',
-              ),
-              _divider(),
-              _SettingsRow(
-                icon: Icons.lock_outline_rounded,
-                label: 'Privacy',
-              ),
-              _divider(),
-              _SettingsRow(
-                icon: Icons.help_outline_rounded,
-                label: 'Help & Support',
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLogoutButton(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushReplacementNamed(context, '/login');
-      },
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.base),
-        decoration: BoxDecoration(
-          color: AppColors.error.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-          border: Border.all(
-            color: AppColors.error.withOpacity(0.2),
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+  Widget _statBox(
+      ThemeData theme, IconData icon, String val, String label, Color color) {
+    return Expanded(
+      child: AppCard(
+        child: Column(
           children: [
-            const Icon(
-              Icons.logout_rounded,
-              color: AppColors.error,
-              size: 20,
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            Text(
-              'Sign Out',
-              style: AppTypography.labelLarge.copyWith(
-                color: AppColors.error,
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(10),
               ),
+              child: Icon(icon, color: color, size: 20),
             ),
+            const SizedBox(height: 8),
+            Text(val,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: theme.colorScheme.onSurface,
+                )),
+            Text(label,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: theme.colorScheme.onSurface.withOpacity(0.4),
+                )),
           ],
         ),
       ),
     );
   }
-}
 
-class _ProfileStatCard extends StatelessWidget {
-  final IconData icon;
-  final String value;
-  final String label;
-  final Color color;
+  Widget _sectionTitle(ThemeData theme, String title) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(title,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: theme.colorScheme.onSurface,
+          )),
+    );
+  }
 
-  const _ProfileStatCard({
-    required this.icon,
-    required this.value,
-    required this.label,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: AppSpacing.lg,
-        horizontal: AppSpacing.md,
-      ),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(
-          color: color.withOpacity(0.15),
+  Widget _achievement(
+      ThemeData theme, IconData icon, String label, Color color) {
+    return Column(
+      children: [
+        Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Icon(icon, color: color, size: 24),
         ),
-      ),
-      child: Column(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: color, size: 22),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            value,
-            style: AppTypography.numberSmall.copyWith(
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          Text(
-            label,
-            style: AppTypography.labelSmall.copyWith(
-              color: AppColors.textTertiary,
-            ),
-          ),
-        ],
-      ),
+        const SizedBox(height: 6),
+        Text(label,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              color: theme.colorScheme.onSurface.withOpacity(0.5),
+            )),
+      ],
     );
   }
-}
 
-class _ProfileInfoRow extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String label;
-  final String value;
-
-  const _ProfileInfoRow({
-    required this.icon,
-    required this.iconColor,
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _infoRow(
+      ThemeData theme, IconData icon, String label, String val, Color color) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.base,
-        vertical: AppSpacing.md,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
         children: [
           Container(
-            width: 36,
-            height: 36,
+            width: 34,
+            height: 34,
             decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(10),
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, color: iconColor, size: 18),
+            child: Icon(icon, color: color, size: 16),
           ),
-          const SizedBox(width: AppSpacing.md),
-          Text(
-            label,
-            style: AppTypography.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
-            ),
-          ),
+          const SizedBox(width: 12),
+          Text(label,
+              style: TextStyle(
+                fontSize: 14,
+                color: theme.colorScheme.onSurface.withOpacity(0.6),
+              )),
           const Spacer(),
-          Text(
-            value,
-            style: AppTypography.labelLarge.copyWith(
-              fontWeight: FontWeight.w600,
+          Text(val,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.onSurface,
+              )),
+        ],
+      ),
+    );
+  }
+
+  Widget _settingRow(ThemeData theme, IconData icon, String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      child: Row(
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.onSurface.withOpacity(0.06),
+              borderRadius: BorderRadius.circular(8),
             ),
+            child: Icon(icon,
+                size: 16, color: theme.colorScheme.onSurface.withOpacity(0.6)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(label,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: theme.colorScheme.onSurface,
+                )),
+          ),
+          Icon(Icons.chevron_right_rounded,
+              size: 20,
+              color: theme.colorScheme.onSurface.withOpacity(0.3)),
+        ],
+      ),
+    );
+  }
+
+  Widget _settingToggle(ThemeData theme, IconData icon, String label,
+      bool value, ValueChanged<bool> onChanged) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: Row(
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.onSurface.withOpacity(0.06),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon,
+                size: 16, color: theme.colorScheme.onSurface.withOpacity(0.6)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(label,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: theme.colorScheme.onSurface,
+                )),
+          ),
+          Switch(
+            value: value,
+            onChanged: onChanged,
           ),
         ],
       ),
     );
   }
-}
 
-class _SettingsRow extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String? value;
-  final bool hasToggle;
-  final bool isEnabled;
-
-  const _SettingsRow({
-    required this.icon,
-    required this.label,
-    this.value,
-    this.hasToggle = false,
-    this.isEnabled = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.base,
-        vertical: AppSpacing.md,
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: AppColors.surfaceVariant,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(icon, color: AppColors.textSecondary, size: 18),
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Text(
-              label,
-              style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ),
-          if (hasToggle)
-            Switch(
-              value: isEnabled,
-              onChanged: (_) {},
-              activeColor: AppColors.primary,
-              inactiveTrackColor: AppColors.surfaceVariant,
-            )
-          else if (value != null)
-            Text(
-              value!,
-              style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textTertiary,
-              ),
-            )
-          else
-            const Icon(
-              Icons.chevron_right_rounded,
-              color: AppColors.textTertiary,
-              size: 20,
-            ),
-        ],
-      ),
+  Widget _div(ThemeData theme) {
+    return Divider(
+      height: 1,
+      indent: 16,
+      endIndent: 16,
+      color: theme.colorScheme.outline.withOpacity(0.15),
     );
   }
 }

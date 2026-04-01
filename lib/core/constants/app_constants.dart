@@ -2,14 +2,6 @@ class AppConstants {
   AppConstants._();
 
   static const String appName = 'FitLife';
-  static const String appTagline = 'Transform Your Body, Elevate Your Life';
-
-  // Animation durations
-  static const Duration animFast = Duration(milliseconds: 200);
-  static const Duration animMedium = Duration(milliseconds: 350);
-  static const Duration animSlow = Duration(milliseconds: 500);
-
-  // Mock data
   static const String userName = 'Alex';
   static const String userFullName = 'Alex Johnson';
   static const int userLevel = 12;

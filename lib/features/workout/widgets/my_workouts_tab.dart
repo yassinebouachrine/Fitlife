@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/app_button.dart';
 
 class MyWorkoutsTab extends StatelessWidget {
@@ -9,64 +6,57 @@ class MyWorkoutsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Show empty state or list of user's custom workouts
-    return _buildEmptyState();
-  }
+    final theme = Theme.of(context);
 
-  Widget _buildEmptyState() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xxl),
+        padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 80,
-              height: 80,
+              width: 72,
+              height: 72,
               decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withOpacity(0.3),
-                    blurRadius: 24,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
+                color: theme.colorScheme.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.add_rounded,
-                color: Colors.white,
-                size: 40,
+                color: theme.colorScheme.primary,
+                size: 36,
               ),
             ),
-            const SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: 20),
             Text(
               'Create Custom Workout',
-              style: AppTypography.headingMedium.copyWith(
+              style: TextStyle(
+                fontSize: 18,
                 fontWeight: FontWeight.w700,
+                color: theme.colorScheme.onSurface,
               ),
             ),
-            const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: 8),
             Text(
               'Build your own workout or let the AI\ncreate one for you',
               textAlign: TextAlign.center,
-              style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.textTertiary,
+              style: TextStyle(
+                fontSize: 14,
+                color: theme.colorScheme.onSurface.withOpacity(0.45),
                 height: 1.5,
               ),
             ),
-            const SizedBox(height: AppSpacing.xxl),
+            const SizedBox(height: 28),
             AppButton(
               label: 'Create Workout',
               icon: Icons.add_rounded,
               onPressed: () {},
             ),
-            const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: 12),
             AppButton(
               label: 'Generate with AI',
               icon: Icons.auto_awesome_rounded,
-              variant: AppButtonVariant.outline,
+              type: ButtonType.outline,
               onPressed: () {},
             ),
           ],

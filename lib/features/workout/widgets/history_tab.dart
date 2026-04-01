@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
+import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/xp_badge.dart';
 
 class HistoryTab extends StatelessWidget {
@@ -9,212 +8,103 @@ class HistoryTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          _buildSummaryCards(),
-          const SizedBox(height: AppSpacing.xl),
-          ..._buildHistoryItems(),
-          const SizedBox(height: AppSpacing.xxl),
+          // Summary
+          Row(
+            children: [
+              _summaryCard(theme, Icons.fitness_center_rounded, '142',
+                  'Total', AppColors.primary),
+              const SizedBox(width: 10),
+              _summaryCard(theme, Icons.schedule_rounded, '89h', 'Time',
+                  AppColors.secondary),
+              const SizedBox(width: 10),
+              _summaryCard(
+                  theme, Icons.bolt_rounded, '2.8k', 'XP', AppColors.accent),
+            ],
+          ),
+          const SizedBox(height: 20),
+          _historyItem(theme, 'Upper Body Power', 'Today, 9:30 AM', '48 min',
+              350, Icons.fitness_center_rounded, AppColors.primary),
+          const SizedBox(height: 10),
+          _historyItem(theme, 'HIIT Cardio Blast', 'Yesterday, 7:00 AM',
+              '30 min', 280, Icons.directions_run_rounded, AppColors.error),
+          const SizedBox(height: 10),
+          _historyItem(theme, 'Leg Day', '2 days ago', '55 min', 400,
+              Icons.sports_martial_arts_rounded, AppColors.secondary),
+          const SizedBox(height: 10),
+          _historyItem(theme, 'Core & Mobility', '3 days ago', '35 min', 220,
+              Icons.self_improvement_rounded, AppColors.info),
+          const SizedBox(height: 10),
+          _historyItem(theme, 'Push Day', '4 days ago', '50 min', 370,
+              Icons.fitness_center_rounded, AppColors.primaryLight),
+          const SizedBox(height: 24),
         ],
       ),
     );
   }
 
-  Widget _buildSummaryCards() {
-    return Row(
-      children: [
-        Expanded(
-          child: _SummaryCard(
-            icon: Icons.fitness_center_rounded,
-            value: '142',
-            label: 'Total',
-            color: AppColors.primary,
-          ),
+  Widget _summaryCard(
+      ThemeData theme, IconData icon, String val, String label, Color color) {
+    return Expanded(
+      child: AppCard(
+        child: Column(
+          children: [
+            Icon(icon, color: color, size: 20),
+            const SizedBox(height: 8),
+            Text(val,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: theme.colorScheme.onSurface,
+                )),
+            Text(label,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: theme.colorScheme.onSurface.withOpacity(0.4),
+                )),
+          ],
         ),
-        const SizedBox(width: AppSpacing.md),
-        Expanded(
-          child: _SummaryCard(
-            icon: Icons.schedule_rounded,
-            value: '89h',
-            label: 'Time',
-            color: AppColors.accent,
-          ),
-        ),
-        const SizedBox(width: AppSpacing.md),
-        Expanded(
-          child: _SummaryCard(
-            icon: Icons.bolt_rounded,
-            value: '2.8k',
-            label: 'XP',
-            color: AppColors.xpGold,
-          ),
-        ),
-      ],
+      ),
     );
   }
 
-  List<Widget> _buildHistoryItems() {
-    final history = [
-      {
-        'title': 'Upper Body Power',
-        'date': 'Today, 9:30 AM',
-        'duration': '48 min',
-        'xp': 350,
-        'icon': Icons.fitness_center_rounded,
-        'color': AppColors.primary,
-      },
-      {
-        'title': 'HIIT Cardio Blast',
-        'date': 'Yesterday, 7:00 AM',
-        'duration': '30 min',
-        'xp': 280,
-        'icon': Icons.directions_run_rounded,
-        'color': AppColors.streakFire,
-      },
-      {
-        'title': 'Leg Day Destruction',
-        'date': '2 days ago',
-        'duration': '55 min',
-        'xp': 400,
-        'icon': Icons.sports_martial_arts_rounded,
-        'color': AppColors.accent,
-      },
-      {
-        'title': 'Core & Mobility',
-        'date': '3 days ago',
-        'duration': '35 min',
-        'xp': 220,
-        'icon': Icons.self_improvement_rounded,
-        'color': AppColors.info,
-      },
-      {
-        'title': 'Push Day',
-        'date': '4 days ago',
-        'duration': '50 min',
-        'xp': 370,
-        'icon': Icons.fitness_center_rounded,
-        'color': AppColors.levelPurple,
-      },
-    ];
-
-    return history.map((item) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: AppSpacing.md),
-        child: _HistoryItem(
-          title: item['title'] as String,
-          date: item['date'] as String,
-          duration: item['duration'] as String,
-          xp: item['xp'] as int,
-          icon: item['icon'] as IconData,
-          color: item['color'] as Color,
-        ),
-      );
-    }).toList();
-  }
-}
-
-class _SummaryCard extends StatelessWidget {
-  final IconData icon;
-  final String value;
-  final String label;
-  final Color color;
-
-  const _SummaryCard({
-    required this.icon,
-    required this.value,
-    required this.label,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(
-          color: color.withOpacity(0.15),
-        ),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: color, size: 22),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            value,
-            style: AppTypography.numberSmall.copyWith(
-              color: color,
-              fontSize: 20,
-            ),
-          ),
-          Text(
-            label,
-            style: AppTypography.labelSmall.copyWith(
-              color: AppColors.textTertiary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _HistoryItem extends StatelessWidget {
-  final String title;
-  final String date;
-  final String duration;
-  final int xp;
-  final IconData icon;
-  final Color color;
-
-  const _HistoryItem({
-    required this.title,
-    required this.date,
-    required this.duration,
-    required this.xp,
-    required this.icon,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.base),
-      decoration: BoxDecoration(
-        color: AppColors.cardDark,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(
-          color: AppColors.textTertiary.withOpacity(0.08),
-        ),
-      ),
+  Widget _historyItem(ThemeData theme, String title, String date, String dur,
+      int xp, IconData icon, Color color) {
+    return AppCard(
       child: Row(
         children: [
           Container(
-            width: 48,
-            height: 48,
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(14),
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: color, size: 24),
+            child: Icon(icon, color: color, size: 22),
           ),
-          const SizedBox(width: AppSpacing.md),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: AppTypography.headingSmall),
-                const SizedBox(height: 3),
-                Text(
-                  date,
-                  style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.textTertiary,
-                  ),
-                ),
+                Text(title,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSurface,
+                    )),
+                const SizedBox(height: 2),
+                Text(date,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: theme.colorScheme.onSurface.withOpacity(0.4),
+                    )),
               ],
             ),
           ),
@@ -222,13 +112,12 @@ class _HistoryItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               XpBadge(xp: xp, compact: true),
-              const SizedBox(height: 6),
-              Text(
-                duration,
-                style: AppTypography.labelSmall.copyWith(
-                  color: AppColors.textTertiary,
-                ),
-              ),
+              const SizedBox(height: 4),
+              Text(dur,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: theme.colorScheme.onSurface.withOpacity(0.4),
+                  )),
             ],
           ),
         ],
