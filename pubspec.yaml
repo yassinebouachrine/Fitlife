@@ -88,10 +88,8 @@
 
 
 
-
-
-name: nexus_gym
-description: Next-Gen AI-Powered Gym App with Neumorphic Design, LLM Coach & Metaverse Features
+name: lifevora
+description: Lifevora - Your Fitness Companion
 publish_to: 'none'
 version: 2.0.0+1
 
@@ -102,14 +100,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # State Management
   flutter_riverpod: ^2.4.9
   riverpod_annotation: ^2.3.3
-
-  # Navigation
   go_router: ^13.0.1
-
-  # UI & Animations
   flutter_animate: ^4.3.0
   shimmer: ^3.0.0
   lottie: ^3.0.0
@@ -118,21 +111,12 @@ dependencies:
   fl_chart: ^0.66.2
   percent_indicator: ^4.2.3
   expandable: ^5.0.1
-
-  # Haptics
-  haptic_feedback: ^0.1.0+2
-
-  # AI / HTTP
   http: ^1.2.0
   dio: ^5.4.1
-
-  # Local Storage
   shared_preferences: ^2.2.2
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   path_provider: ^2.1.2
-
-  # Utilities
   intl: ^0.18.1
   uuid: ^4.3.3
   equatable: ^2.0.5
@@ -146,8 +130,6 @@ dependencies:
   connectivity_plus: ^6.0.3
   flutter_local_notifications: ^17.0.0
   sensors_plus: ^5.0.1
-
-  # Icons
   font_awesome_flutter: ^10.7.0
   cupertino_icons: ^1.0.6
   flutter_dotenv: ^6.0.0

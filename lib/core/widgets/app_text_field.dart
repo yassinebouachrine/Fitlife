@@ -3,26 +3,26 @@ import 'package:flutter/material.dart';
 class AppTextField extends StatelessWidget {
   final String label;
   final String? hint;
-  final IconData? prefixIcon;
+  final IconData? prefix;
   final Widget? suffix;
-  final bool obscureText;
+  final bool obscure;
   final TextEditingController? controller;
-  final TextInputType? keyboardType;
+  final TextInputType? keyboard;
 
   const AppTextField({
     super.key,
     required this.label,
     this.hint,
-    this.prefixIcon,
+    this.prefix,
     this.suffix,
-    this.obscureText = false,
+    this.obscure = false,
     this.controller,
-    this.keyboardType,
+    this.keyboard,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final cs = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -30,24 +30,31 @@ class AppTextField extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: theme.colorScheme.onSurface.withOpacity(0.7),
+            fontWeight: FontWeight.w500,
+            color: cs.onSurface.withOpacity(0.55),
+            letterSpacing: 0.1,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         TextFormField(
           controller: controller,
-          obscureText: obscureText,
-          keyboardType: keyboardType,
+          obscureText: obscure,
+          keyboardType: keyboard,
           style: TextStyle(
             fontSize: 15,
-            color: theme.colorScheme.onSurface,
+            fontWeight: FontWeight.w400,
+            color: cs.onSurface,
+            letterSpacing: 0.1,
           ),
           decoration: InputDecoration(
             hintText: hint,
-            prefixIcon: prefixIcon != null
-                ? Icon(prefixIcon, size: 20)
+            prefixIcon: prefix != null
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 14, right: 10),
+                    child: Icon(prefix, size: 18),
+                  )
                 : null,
+            prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
             suffixIcon: suffix,
           ),
         ),

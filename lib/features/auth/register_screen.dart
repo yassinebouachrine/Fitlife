@@ -1,324 +1,137 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_colors.dart';
 import '../../core/widgets/app_button.dart';
 import '../../core/widgets/app_text_field.dart';
 import '../../navigation/main_shell.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
-
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
   int _step = 0;
-  bool _obscure = true;
-  String _selectedGoal = 'Build Muscle';
-  String _selectedLevel = 'Intermediate';
+  bool _hide = true;
+  String _goal = 'Build Muscle';
+  String _lvl = 'Intermediate';
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
+    final cs = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () {
-            if (_step > 0) {
-              setState(() => _step = 0);
-            } else {
-              Navigator.pop(context);
-            }
-          },
+          icon: const Icon(Icons.arrow_back_rounded, size: 20),
+          onPressed: () => _step > 0 ? setState(() => _step = 0) : Navigator.pop(context),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Center(
-              child: Text(
-                'Step ${_step + 1}/2',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: theme.colorScheme.onSurface.withOpacity(0.4),
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
+          Padding(padding: const EdgeInsets.only(right: 16), child: Center(
+            child: Text('${_step + 1} / 2', style: TextStyle(
+              fontSize: 13, color: cs.onSurface.withOpacity(0.35), fontWeight: FontWeight.w500)),
+          )),
         ],
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Progress bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primary,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Container(
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: _step >= 1
-                            ? theme.colorScheme.primary
-                            : theme.colorScheme.outline.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ),
-                ],
+      body: SafeArea(child: Column(children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 6),
+          child: Row(children: List.generate(2, (i) => Expanded(
+            child: Container(
+              height: 3,
+              margin: EdgeInsets.only(right: i == 0 ? 6 : 0),
+              decoration: BoxDecoration(
+                color: i <= _step ? cs.primary : cs.outline.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(2),
               ),
             ),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
-                child: _step == 0 ? _accountStep(theme) : _profileStep(theme),
-              ),
-            ),
-          ],
+          ))),
         ),
-      ),
+        Expanded(child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: _step == 0 ? _account(cs) : _profile(cs),
+        )),
+      ])),
     );
   }
 
-  Widget _accountStep(ThemeData theme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Create\nAccount',
-          style: TextStyle(
-            fontSize: 32,
-            fontWeight: FontWeight.w800,
-            color: theme.colorScheme.onSurface,
-            height: 1.15,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Start your fitness transformation today',
-          style: TextStyle(
-            fontSize: 15,
-            color: theme.colorScheme.onSurface.withOpacity(0.5),
-          ),
-        ),
-        const SizedBox(height: 32),
-        const AppTextField(
-          label: 'Full Name',
-          hint: 'Your full name',
-          prefixIcon: Icons.person_outline_rounded,
-        ),
-        const SizedBox(height: 20),
-        const AppTextField(
-          label: 'Email',
-          hint: 'your@email.com',
-          prefixIcon: Icons.mail_outline_rounded,
-          keyboardType: TextInputType.emailAddress,
-        ),
-        const SizedBox(height: 20),
-        AppTextField(
-          label: 'Password',
-          hint: '••••••••',
-          prefixIcon: Icons.lock_outline_rounded,
-          obscureText: _obscure,
-          suffix: IconButton(
-            icon: Icon(
-              _obscure
-                  ? Icons.visibility_off_outlined
-                  : Icons.visibility_outlined,
-              size: 20,
-            ),
-            onPressed: () => setState(() => _obscure = !_obscure),
-          ),
-        ),
-        const SizedBox(height: 32),
-        AppButton(
-          label: 'Continue',
-          icon: Icons.arrow_forward_rounded,
-          onPressed: () => setState(() => _step = 1),
-        ),
-      ],
-    );
-  }
+  Widget _account(ColorScheme cs) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    Text('Create account', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700, color: cs.onSurface, letterSpacing: -0.3)),
+    const SizedBox(height: 6),
+    Text('Join Lifevora today', style: TextStyle(fontSize: 15, color: cs.onSurface.withOpacity(0.4))),
+    const SizedBox(height: 28),
+    const AppTextField(label: 'Full name', hint: 'Your name', prefix: Icons.person_outline_rounded),
+    const SizedBox(height: 16),
+    const AppTextField(label: 'Email', hint: 'you@example.com', prefix: Icons.mail_outline_rounded, keyboard: TextInputType.emailAddress),
+    const SizedBox(height: 16),
+    AppTextField(label: 'Password', hint: 'Min. 8 characters', prefix: Icons.lock_outline_rounded, obscure: _hide,
+      suffix: GestureDetector(onTap: () => setState(() => _hide = !_hide),
+        child: Padding(padding: const EdgeInsets.only(right: 12),
+          child: Icon(_hide ? Icons.visibility_off_outlined : Icons.visibility_outlined, size: 18, color: cs.onSurface.withOpacity(0.3))))),
+    const SizedBox(height: 28),
+    AppButton(label: 'Continue', onPressed: () => setState(() => _step = 1)),
+  ]);
 
-  Widget _profileStep(ThemeData theme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Fitness\nProfile',
-          style: TextStyle(
-            fontSize: 32,
-            fontWeight: FontWeight.w800,
-            color: theme.colorScheme.onSurface,
-            height: 1.15,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Help us personalize your experience',
-          style: TextStyle(
-            fontSize: 15,
-            color: theme.colorScheme.onSurface.withOpacity(0.5),
-          ),
-        ),
-        const SizedBox(height: 28),
-        Text(
-          'Fitness Goal',
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: theme.colorScheme.onSurface.withOpacity(0.7),
-          ),
-        ),
-        const SizedBox(height: 12),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            _goalChip('Build Muscle', Icons.fitness_center_rounded, theme),
-            _goalChip('Lose Weight', Icons.local_fire_department_rounded, theme),
-            _goalChip('Stay Fit', Icons.favorite_rounded, theme),
-            _goalChip('Strength', Icons.sports_martial_arts_rounded, theme),
-          ],
-        ),
-        const SizedBox(height: 24),
-        Text(
-          'Experience Level',
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: theme.colorScheme.onSurface.withOpacity(0.7),
-          ),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: ['Beginner', 'Intermediate', 'Advanced']
-              .map((l) => Expanded(
-                    child: GestureDetector(
-                      onTap: () => setState(() => _selectedLevel = l),
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 8),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        decoration: BoxDecoration(
-                          color: _selectedLevel == l
-                              ? theme.colorScheme.primary.withOpacity(0.1)
-                              : theme.colorScheme.surface,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: _selectedLevel == l
-                                ? theme.colorScheme.primary
-                                : theme.colorScheme.outline.withOpacity(0.5),
-                            width: _selectedLevel == l ? 1.5 : 1,
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            l,
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: _selectedLevel == l
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
-                              color: _selectedLevel == l
-                                  ? theme.colorScheme.primary
-                                  : theme.colorScheme.onSurface.withOpacity(0.6),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ))
-              .toList(),
-        ),
-        const SizedBox(height: 24),
-        Row(
-          children: const [
-            Expanded(
-              child: AppTextField(
-                label: 'Weight (kg)',
-                hint: '75',
-                prefixIcon: Icons.monitor_weight_outlined,
-                keyboardType: TextInputType.number,
-              ),
-            ),
-            SizedBox(width: 12),
-            Expanded(
-              child: AppTextField(
-                label: 'Height (cm)',
-                hint: '175',
-                prefixIcon: Icons.height_rounded,
-                keyboardType: TextInputType.number,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 32),
-        AppButton(
-          label: 'Get Started',
-          icon: Icons.rocket_launch_rounded,
-          onPressed: () => Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => const MainShell()),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _goalChip(String label, IconData icon, ThemeData theme) {
-    final selected = _selectedGoal == label;
-    return GestureDetector(
-      onTap: () => setState(() => _selectedGoal = label),
+  Widget _profile(ColorScheme cs) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    Text('Your profile', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700, color: cs.onSurface, letterSpacing: -0.3)),
+    const SizedBox(height: 6),
+    Text('Personalize your experience', style: TextStyle(fontSize: 15, color: cs.onSurface.withOpacity(0.4))),
+    const SizedBox(height: 24),
+    _lbl(cs, 'Goal'),
+    const SizedBox(height: 10),
+    Wrap(spacing: 8, runSpacing: 8, children: [
+      _chip(cs, 'Build Muscle', Icons.fitness_center_outlined),
+      _chip(cs, 'Lose Weight', Icons.trending_down_rounded),
+      _chip(cs, 'Stay Fit', Icons.favorite_outline_rounded),
+      _chip(cs, 'Strength', Icons.sports_rounded),
+    ]),
+    const SizedBox(height: 22),
+    _lbl(cs, 'Level'),
+    const SizedBox(height: 10),
+    Row(children: ['Beginner', 'Intermediate', 'Advanced'].map((l) => Expanded(child: GestureDetector(
+      onTap: () => setState(() => _lvl = l),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        margin: const EdgeInsets.only(right: 8),
+        padding: const EdgeInsets.symmetric(vertical: 11),
         decoration: BoxDecoration(
-          color: selected
-              ? theme.colorScheme.primary.withOpacity(0.1)
-              : theme.colorScheme.surface,
+          color: _lvl == l ? cs.primary.withOpacity(0.06) : cs.surface,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: selected
-                ? theme.colorScheme.primary
-                : theme.colorScheme.outline.withOpacity(0.5),
-            width: selected ? 1.5 : 1,
-          ),
+          border: Border.all(color: _lvl == l ? cs.primary : cs.outline, width: _lvl == l ? 1.5 : 1),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 18,
-              color: selected
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.onSurface.withOpacity(0.5),
-            ),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                color: selected
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurface.withOpacity(0.6),
-              ),
-            ),
-          ],
+        child: Center(child: Text(l, style: TextStyle(
+          fontSize: 12, fontWeight: _lvl == l ? FontWeight.w600 : FontWeight.w400,
+          color: _lvl == l ? cs.primary : cs.onSurface.withOpacity(0.45),
+        ))),
+      ),
+    ))).toList()),
+    const SizedBox(height: 22),
+    const Row(children: [
+      Expanded(child: AppTextField(label: 'Weight (kg)', hint: '75', prefix: Icons.monitor_weight_outlined, keyboard: TextInputType.number)),
+      SizedBox(width: 12),
+      Expanded(child: AppTextField(label: 'Height (cm)', hint: '175', prefix: Icons.straighten_rounded, keyboard: TextInputType.number)),
+    ]),
+    const SizedBox(height: 28),
+    AppButton(label: 'Get started', onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MainShell()))),
+  ]);
+
+  Widget _lbl(ColorScheme cs, String t) => Text(t, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: cs.onSurface.withOpacity(0.5)));
+
+  Widget _chip(ColorScheme cs, String label, IconData icon) {
+    final sel = _goal == label;
+    return GestureDetector(
+      onTap: () => setState(() => _goal = label),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+        decoration: BoxDecoration(
+          color: sel ? cs.primary.withOpacity(0.06) : cs.surface,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: sel ? cs.primary : cs.outline, width: sel ? 1.5 : 1),
         ),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Icon(icon, size: 16, color: sel ? cs.primary : cs.onSurface.withOpacity(0.35)),
+          const SizedBox(width: 6),
+          Text(label, style: TextStyle(fontSize: 13,
+            fontWeight: sel ? FontWeight.w600 : FontWeight.w400,
+            color: sel ? cs.primary : cs.onSurface.withOpacity(0.5))),
+        ]),
       ),
     );
   }

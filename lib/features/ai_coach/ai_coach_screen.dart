@@ -1,272 +1,136 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_colors.dart';
 
 class AiCoachScreen extends StatefulWidget {
   const AiCoachScreen({super.key});
-
   @override
   State<AiCoachScreen> createState() => _AiCoachScreenState();
 }
 
 class _AiCoachScreenState extends State<AiCoachScreen> {
-  final _controller = TextEditingController();
-  final List<Map<String, dynamic>> _messages = [
-    {
-      'text':
-          "Hey! I'm NEXUS — your AI fitness coach. Tell me what you need: workout plans, nutrition tips, or motivation. What's on your agenda today? 💪",
-      'isUser': false,
-    },
+  final _ctrl = TextEditingController();
+  final _msgs = <Map<String, dynamic>>[
+    {'t': 'Hey! I\'m your Lifevora coach. I can help with workout plans, nutrition, form checks, and motivation. What would you like to work on?', 'u': false},
   ];
 
   void _send() {
-    final t = _controller.text.trim();
+    final t = _ctrl.text.trim();
     if (t.isEmpty) return;
-    setState(() {
-      _messages.add({'text': t, 'isUser': true});
-      _controller.clear();
-    });
-
+    setState(() { _msgs.add({'t': t, 'u': true}); _ctrl.clear(); });
     Future.delayed(const Duration(seconds: 1), () {
       if (!mounted) return;
-      setState(() {
-        _messages.add({
-          'text':
-              'Great question! Based on your Level 12 profile, I recommend increasing your compound lifts by 2.5kg this week. Want a detailed plan?',
-          'isUser': false,
-        });
-      });
+      setState(() => _msgs.add({'t': 'Based on your profile, I recommend progressive overload this week. Increase compound lifts by 2.5kg with 60-90s rest. Want a detailed plan?', 'u': false}));
     });
   }
 
   @override
+  void dispose() { _ctrl.dispose(); super.dispose(); }
+
+  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient,
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: const Icon(Icons.psychology_rounded,
-                        color: Colors.white, size: 24),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text('NEXUS AI Coach',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: theme.colorScheme.onSurface,
-                                )),
-                            const SizedBox(width: 6),
-                            Container(
-                              width: 8,
-                              height: 8,
-                              decoration: const BoxDecoration(
-                                color: AppColors.secondary,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Text('Powered by Advanced AI',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: theme.colorScheme.onSurface
-                                  .withOpacity(0.4),
-                            )),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.refresh_rounded,
-                        color: theme.colorScheme.onSurface.withOpacity(0.5)),
-                    onPressed: () {
-                      setState(() {
-                        _messages.clear();
-                        _messages.add({
-                          'text':
-                              "Chat reset! How can I help you today? 💪",
-                          'isUser': false,
-                        });
-                      });
-                    },
-                  ),
-                ],
-              ),
-            ),
-            Divider(
-              color: theme.colorScheme.outline.withOpacity(0.2),
-              height: 1,
-            ),
-            // Messages
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: _messages.length,
-                itemBuilder: (_, i) {
-                  final m = _messages[i];
-                  return _bubble(theme, m['text'], m['isUser']);
-                },
-              ),
-            ),
-            // Suggestions
-            SizedBox(
-              height: 40,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                children: [
-                  _suggestion(theme, Icons.calendar_today_rounded,
-                      'Weekly plan'),
-                  const SizedBox(width: 8),
-                  _suggestion(
-                      theme, Icons.restaurant_rounded, 'Nutrition tips'),
-                  const SizedBox(width: 8),
-                  _suggestion(
-                      theme, Icons.trending_up_rounded, 'Track progress'),
-                ],
-              ),
-            ),
-            const SizedBox(height: 8),
-            // Input
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.surface,
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(
-                          color: theme.colorScheme.outline.withOpacity(0.3),
-                        ),
-                      ),
-                      child: TextField(
-                        controller: _controller,
-                        style: TextStyle(
-                          color: theme.colorScheme.onSurface,
-                          fontSize: 14,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: 'Ask NEXUS anything...',
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 12),
-                          hintStyle: TextStyle(
-                            color: theme.colorScheme.onSurface
-                                .withOpacity(0.35),
-                          ),
-                        ),
-                        onSubmitted: (_) => _send(),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: _send,
-                    child: Container(
-                      width: 46,
-                      height: 46,
-                      decoration: BoxDecoration(
-                        gradient: AppColors.primaryGradient,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: const Icon(Icons.send_rounded,
-                          color: Colors.white, size: 20),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+    final cs = Theme.of(context).colorScheme;
+    return Scaffold(body: SafeArea(child: Column(children: [
+      // Header
+      Padding(padding: const EdgeInsets.fromLTRB(16, 12, 8, 10), child: Row(children: [
+        Container(
+          width: 40, height: 40,
+          decoration: BoxDecoration(color: cs.primary, borderRadius: BorderRadius.circular(11)),
+          child: const Icon(Icons.auto_awesome_outlined, color: Colors.white, size: 20),
         ),
-      ),
-    );
+        const SizedBox(width: 12),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            Text('Lifevora Coach', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: cs.onSurface)),
+            const SizedBox(width: 5),
+            Container(width: 6, height: 6, decoration: BoxDecoration(color: const Color(0xFF10B981), shape: BoxShape.circle)),
+          ]),
+          Text('Always here to help', style: TextStyle(fontSize: 11, color: cs.onSurface.withOpacity(0.38))),
+        ])),
+        IconButton(icon: Icon(Icons.refresh_outlined, size: 20, color: cs.onSurface.withOpacity(0.35)),
+          onPressed: () => setState(() { _msgs.clear(); _msgs.add({'t': 'Chat reset. How can I help?', 'u': false}); })),
+      ])),
+      Divider(height: 1, color: cs.outline.withOpacity(0.3)),
+
+      // Chat
+      Expanded(child: ListView.builder(
+        padding: const EdgeInsets.all(16), itemCount: _msgs.length,
+        itemBuilder: (_, i) {
+          final m = _msgs[i]; final u = m['u'] as bool;
+          return Align(
+            alignment: u ? Alignment.centerRight : Alignment.centerLeft,
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+              constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.78),
+              decoration: BoxDecoration(
+                color: u ? cs.primary.withOpacity(0.06) : cs.surface,
+                borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(16), topRight: const Radius.circular(16),
+                  bottomLeft: Radius.circular(u ? 16 : 4), bottomRight: Radius.circular(u ? 4 : 16),
+                ),
+                border: Border.all(color: u ? cs.primary.withOpacity(0.12) : cs.outline.withOpacity(0.4)),
+              ),
+              child: Text(m['t'] as String, style: TextStyle(fontSize: 14, color: cs.onSurface, height: 1.45)),
+            ),
+          );
+        },
+      )),
+
+      // Suggestions
+      SizedBox(height: 36, child: ListView(
+        scrollDirection: Axis.horizontal, padding: const EdgeInsets.symmetric(horizontal: 16),
+        children: [
+          _sug(cs, Icons.calendar_today_outlined, 'Weekly plan'),
+          const SizedBox(width: 6),
+          _sug(cs, Icons.restaurant_outlined, 'Nutrition'),
+          const SizedBox(width: 6),
+          _sug(cs, Icons.trending_up_outlined, 'Progress'),
+          const SizedBox(width: 6),
+          _sug(cs, Icons.help_outline_rounded, 'Form tips'),
+        ],
+      )),
+      const SizedBox(height: 6),
+
+      // Input
+      Padding(padding: const EdgeInsets.fromLTRB(16, 6, 16, 8), child: Row(children: [
+        Expanded(child: TextField(
+          controller: _ctrl,
+          style: TextStyle(fontSize: 14, color: cs.onSurface),
+          decoration: InputDecoration(
+            hintText: 'Ask anything...',
+            filled: true, fillColor: cs.surface,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: cs.outline)),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: cs.outline.withOpacity(0.5))),
+            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: cs.primary)),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          ),
+          onSubmitted: (_) => _send(),
+        )),
+        const SizedBox(width: 8),
+        SizedBox(width: 44, height: 44, child: ElevatedButton(
+          onPressed: _send,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: cs.primary, foregroundColor: Colors.white, elevation: 0, padding: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          child: const Icon(Icons.arrow_upward_rounded, size: 20),
+        )),
+      ])),
+    ])));
   }
 
-  Widget _bubble(ThemeData theme, String text, bool isUser) {
-    return Align(
-      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(14),
-        constraints:
-            BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.78),
-        decoration: BoxDecoration(
-          color: isUser
-              ? theme.colorScheme.primary.withOpacity(0.1)
-              : theme.colorScheme.surface,
-          borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(18),
-            topRight: const Radius.circular(18),
-            bottomLeft: Radius.circular(isUser ? 18 : 4),
-            bottomRight: Radius.circular(isUser ? 4 : 18),
-          ),
-          border: Border.all(
-            color: isUser
-                ? theme.colorScheme.primary.withOpacity(0.2)
-                : theme.colorScheme.outline.withOpacity(0.3),
-          ),
-        ),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 14,
-            color: theme.colorScheme.onSurface,
-            height: 1.5,
-          ),
-        ),
+  Widget _sug(ColorScheme cs, IconData icon, String l) => GestureDetector(
+    onTap: () { _ctrl.text = l; _send(); },
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+      decoration: BoxDecoration(
+        color: cs.surface, borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: cs.outline.withOpacity(0.4)),
       ),
-    );
-  }
-
-  Widget _suggestion(ThemeData theme, IconData icon, String label) {
-    return GestureDetector(
-      onTap: () {
-        _controller.text = label;
-        _send();
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: theme.colorScheme.outline.withOpacity(0.3),
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 14, color: theme.colorScheme.primary),
-            const SizedBox(width: 6),
-            Text(label,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: theme.colorScheme.onSurface.withOpacity(0.7),
-                )),
-          ],
-        ),
-      ),
-    );
-  }
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Icon(icon, size: 13, color: cs.primary),
+        const SizedBox(width: 5),
+        Text(l, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: cs.onSurface.withOpacity(0.55))),
+      ]),
+    ),
+  );
 }

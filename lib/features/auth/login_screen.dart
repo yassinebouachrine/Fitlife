@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_colors.dart';
 import '../../core/widgets/app_button.dart';
 import '../../core/widgets/app_text_field.dart';
 import '../../navigation/main_shell.dart';
@@ -7,56 +6,35 @@ import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
-
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>
-    with SingleTickerProviderStateMixin {
-  bool _obscure = true;
+class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
+  bool _hide = true;
   bool _loading = false;
-  late AnimationController _anim;
-  late Animation<double> _fade;
-  late Animation<Offset> _slide;
+  late final _anim = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
+  late final _fade = CurvedAnimation(parent: _anim, curve: Curves.easeOut);
+  late final _slide = Tween(begin: const Offset(0, 0.04), end: Offset.zero)
+      .animate(CurvedAnimation(parent: _anim, curve: Curves.easeOutCubic));
 
   @override
-  void initState() {
-    super.initState();
-    _anim = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
-    );
-    _fade = CurvedAnimation(parent: _anim, curve: Curves.easeOut);
-    _slide = Tween<Offset>(
-      begin: const Offset(0, 0.08),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _anim, curve: Curves.easeOutCubic));
-    _anim.forward();
-  }
-
+  void initState() { super.initState(); _anim.forward(); }
   @override
-  void dispose() {
-    _anim.dispose();
-    super.dispose();
-  }
+  void dispose() { _anim.dispose(); super.dispose(); }
 
   void _login() {
     setState(() => _loading = true);
-    Future.delayed(const Duration(milliseconds: 1200), () {
+    Future.delayed(const Duration(milliseconds: 900), () {
       if (!mounted) return;
       setState(() => _loading = false);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const MainShell()),
-      );
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MainShell()));
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
+    final cs = Theme.of(context).colorScheme;
     return Scaffold(
       body: SafeArea(
         child: FadeTransition(
@@ -68,165 +46,127 @@ class _LoginScreenState extends State<LoginScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 48),
+                  const SizedBox(height: 40),
+
                   // Logo
                   Center(
-                    child: Container(
-                      width: 72,
-                      height: 72,
-                      decoration: BoxDecoration(
-                        gradient: AppColors.primaryGradient,
-                        borderRadius: BorderRadius.circular(22),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primary.withOpacity(0.3),
-                            blurRadius: 20,
-                            offset: const Offset(0, 8),
+                    child: Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.asset(
+                            'assets/images/logo.png',
+                            width: 64, height: 64,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              width: 64, height: 64,
+                              decoration: BoxDecoration(
+                                color: cs.primary,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: const Icon(Icons.favorite_rounded, color: Colors.white, size: 28),
+                            ),
                           ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.bolt_rounded,
-                        color: Colors.white,
-                        size: 36,
-                      ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text('Lifevora', style: TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.w700,
+                          color: cs.primary, letterSpacing: -0.3,
+                        )),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 40),
+
                   // Title
-                  Text(
-                    'Welcome\nBack',
-                    style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.w800,
-                      color: theme.colorScheme.onSurface,
-                      height: 1.15,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Sign in to continue your fitness journey',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: theme.colorScheme.onSurface.withOpacity(0.5),
-                    ),
-                  ),
-                  const SizedBox(height: 36),
+                  Text('Welcome back', style: TextStyle(
+                    fontSize: 28, fontWeight: FontWeight.w700,
+                    color: cs.onSurface, letterSpacing: -0.5, height: 1.2,
+                  )),
+                  const SizedBox(height: 6),
+                  Text('Sign in to your account', style: TextStyle(
+                    fontSize: 15, fontWeight: FontWeight.w400,
+                    color: cs.onSurface.withOpacity(0.45),
+                  )),
+                  const SizedBox(height: 32),
+
                   // Form
                   AppTextField(
-                    label: 'Email Address',
-                    hint: 'your@email.com',
-                    prefixIcon: Icons.mail_outline_rounded,
-                    keyboardType: TextInputType.emailAddress,
+                    label: 'Email',
+                    hint: 'you@example.com',
+                    prefix: Icons.mail_outline_rounded,
+                    keyboard: TextInputType.emailAddress,
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 18),
                   AppTextField(
                     label: 'Password',
-                    hint: '••••••••',
-                    prefixIcon: Icons.lock_outline_rounded,
-                    obscureText: _obscure,
-                    suffix: IconButton(
-                      icon: Icon(
-                        _obscure
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility_outlined,
-                        size: 20,
-                        color: theme.colorScheme.onSurface.withOpacity(0.4),
+                    hint: 'Enter password',
+                    prefix: Icons.lock_outline_rounded,
+                    obscure: _hide,
+                    suffix: GestureDetector(
+                      onTap: () => setState(() => _hide = !_hide),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 12),
+                        child: Icon(
+                          _hide ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                          size: 18, color: cs.onSurface.withOpacity(0.3),
+                        ),
                       ),
-                      onPressed: () => setState(() => _obscure = !_obscure),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {},
-                      child: Text(
-                        'Forgot Password?',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: theme.colorScheme.primary,
-                        ),
+                      style: TextButton.styleFrom(
+                        foregroundColor: cs.primary,
+                        textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
                       ),
+                      child: const Text('Forgot password?'),
                     ),
                   ),
                   const SizedBox(height: 8),
-                  AppButton(
-                    label: 'Sign In',
-                    icon: Icons.arrow_forward_rounded,
-                    isLoading: _loading,
-                    onPressed: _login,
-                  ),
-                  const SizedBox(height: 28),
+                  AppButton(label: 'Sign In', loading: _loading, onPressed: _login),
+                  const SizedBox(height: 24),
+
                   // Divider
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          color: theme.colorScheme.outline.withOpacity(0.3),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(
-                          'or continue with',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color:
-                                theme.colorScheme.onSurface.withOpacity(0.4),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          color: theme.colorScheme.outline.withOpacity(0.3),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
+                  Row(children: [
+                    Expanded(child: Divider(color: cs.outline.withOpacity(0.5))),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      child: Text('or', style: TextStyle(
+                        fontSize: 13, color: cs.onSurface.withOpacity(0.3),
+                      )),
+                    ),
+                    Expanded(child: Divider(color: cs.outline.withOpacity(0.5))),
+                  ]),
+                  const SizedBox(height: 18),
+
                   // Social
-                  Row(
-                    children: [
-                      Expanded(child: _socialBtn(context, 'Google', Icons.g_mobiledata_rounded)),
-                      const SizedBox(width: 12),
-                      Expanded(child: _socialBtn(context, 'Apple', Icons.apple_rounded)),
-                    ],
-                  ),
-                  const SizedBox(height: 28),
+                  Row(children: [
+                    Expanded(child: _social(cs, 'Google', Icons.g_mobiledata_rounded)),
+                    const SizedBox(width: 12),
+                    Expanded(child: _social(cs, 'Apple', Icons.apple_rounded)),
+                  ]),
+                  const SizedBox(height: 32),
+
                   // Register
                   Center(
                     child: GestureDetector(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const RegisterScreen(),
-                        ),
-                      ),
-                      child: RichText(
-                        text: TextSpan(
-                          text: "Don't have an account? ",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color:
-                                theme.colorScheme.onSurface.withOpacity(0.5),
-                          ),
-                          children: [
-                            TextSpan(
-                              text: 'Sign Up',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                color: theme.colorScheme.primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      onTap: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => const RegisterScreen())),
+                      child: Text.rich(TextSpan(
+                        text: 'No account? ',
+                        style: TextStyle(fontSize: 14, color: cs.onSurface.withOpacity(0.4)),
+                        children: [
+                          TextSpan(text: 'Create one',
+                            style: TextStyle(fontWeight: FontWeight.w600, color: cs.primary)),
+                        ],
+                      )),
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),
@@ -236,38 +176,17 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  Widget _socialBtn(BuildContext context, String label, IconData icon) {
-    final theme = Theme.of(context);
-    return Container(
-      height: 52,
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.5),
-        ),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {},
-          borderRadius: BorderRadius.circular(12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 24, color: theme.colorScheme.onSurface),
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: theme.colorScheme.onSurface,
-                ),
-              ),
-            ],
-          ),
-        ),
+  Widget _social(ColorScheme cs, String label, IconData icon) {
+    return OutlinedButton.icon(
+      onPressed: () {},
+      icon: Icon(icon, size: 20),
+      label: Text(label),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: cs.onSurface,
+        side: BorderSide(color: cs.outline),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, fontFamily: 'Inter'),
       ),
     );
   }

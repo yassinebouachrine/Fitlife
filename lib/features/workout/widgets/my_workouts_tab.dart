@@ -6,62 +6,24 @@ class MyWorkoutsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Icon(
-                Icons.add_rounded,
-                color: theme.colorScheme.primary,
-                size: 36,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Create Custom Workout',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: theme.colorScheme.onSurface,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Build your own workout or let the AI\ncreate one for you',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: theme.colorScheme.onSurface.withOpacity(0.45),
-                height: 1.5,
-              ),
-            ),
-            const SizedBox(height: 28),
-            AppButton(
-              label: 'Create Workout',
-              icon: Icons.add_rounded,
-              onPressed: () {},
-            ),
-            const SizedBox(height: 12),
-            AppButton(
-              label: 'Generate with AI',
-              icon: Icons.auto_awesome_rounded,
-              type: ButtonType.outline,
-              onPressed: () {},
-            ),
-          ],
+    final cs = Theme.of(context).colorScheme;
+    return Center(child: Padding(padding: const EdgeInsets.all(32), child: Column(
+      mainAxisAlignment: MainAxisAlignment.center, children: [
+        Container(
+          width: 64, height: 64,
+          decoration: BoxDecoration(color: cs.primary.withOpacity(0.06), borderRadius: BorderRadius.circular(18)),
+          child: Icon(Icons.add_rounded, color: cs.primary, size: 28),
         ),
-      ),
-    );
+        const SizedBox(height: 18),
+        Text('No workouts yet', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: cs.onSurface)),
+        const SizedBox(height: 6),
+        Text('Create a custom workout or\ngenerate one with AI', textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 14, color: cs.onSurface.withOpacity(0.4), height: 1.5)),
+        const SizedBox(height: 24),
+        AppButton(label: 'Create workout', onPressed: () {}),
+        const SizedBox(height: 10),
+        AppButton(label: 'Generate with AI', icon: Icons.auto_awesome_outlined, type: Btn.outline, onPressed: () {}),
+      ],
+    )));
   }
 }

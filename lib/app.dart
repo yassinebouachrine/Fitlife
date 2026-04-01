@@ -3,18 +3,18 @@ import 'core/theme/app_theme.dart';
 import 'core/theme/theme_provider.dart';
 import 'features/auth/login_screen.dart';
 
-class FitLifeApp extends StatefulWidget {
-  const FitLifeApp({super.key});
+class LifevoraApp extends StatefulWidget {
+  const LifevoraApp({super.key});
 
   @override
-  State<FitLifeApp> createState() => _FitLifeAppState();
+  State<LifevoraApp> createState() => _LifevoraAppState();
 }
 
-class _FitLifeAppState extends State<FitLifeApp> {
+class _LifevoraAppState extends State<LifevoraApp> {
   @override
   void initState() {
     super.initState();
-    ThemeProvider.instance.addListener(() {
+    ThemeProvider.I.addListener(() {
       if (mounted) setState(() {});
     });
   }
@@ -22,11 +22,11 @@ class _FitLifeAppState extends State<FitLifeApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'FitLife',
+      title: 'Lifevora',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeProvider.instance.themeMode,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeProvider.I.mode,
       home: const LoginScreen(),
     );
   }
