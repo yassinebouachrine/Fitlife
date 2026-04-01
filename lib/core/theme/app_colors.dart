@@ -1,114 +1,105 @@
 import 'package:flutter/material.dart';
 
-/// NexusGym Design System — Dark Neumorphism + Glassmorphism Color System
 class AppColors {
   AppColors._();
 
-  // ─── Background System (Dark Neumorphic Base) ─────────────────────────────
-  /// Deep space dark — the neumorphic base canvas
-  static const Color backgroundDark = Color(0xFF13151F);
+  // Primary palette
+  static const Color primary = Color(0xFF6C63FF);
+  static const Color primaryLight = Color(0xFF8B83FF);
+  static const Color primaryDark = Color(0xFF4A42D4);
 
-  /// Slightly lighter card surface
-  static const Color backgroundCard = Color(0xFF1A1D2E);
+  // Accent colors
+  static const Color accent = Color(0xFF00D4AA);
+  static const Color accentLight = Color(0xFF33DDBB);
+  static const Color accentDark = Color(0xFF00B894);
 
-  /// Elevated surface (inputs, chips)
-  static const Color backgroundElevated = Color(0xFF1F2235);
+  // Background colors
+  static const Color background = Color(0xFF0A0E21);
+  static const Color surface = Color(0xFF131736);
+  static const Color surfaceLight = Color(0xFF1C2044);
+  static const Color surfaceVariant = Color(0xFF252952);
 
-  /// Deeper inset surface
-  static const Color backgroundSurface = Color(0xFF11131C);
+  // Card colors
+  static const Color cardDark = Color(0xFF151937);
+  static const Color cardMedium = Color(0xFF1A1E3D);
+  static const Color cardLight = Color(0xFF1F2347);
 
-  // ─── Neumorphic Shadows (Dark Mode) ────────────────────────────────────────
-  /// Dark shadow — deep dark (recessed effect)
-  static const Color shadowDark = Color(0xFF0A0B13);
+  // Text colors
+  static const Color textPrimary = Color(0xFFF5F5F7);
+  static const Color textSecondary = Color(0xFFB0B3C6);
+  static const Color textTertiary = Color(0xFF6B6F8D);
+  static const Color textDisabled = Color(0xFF4A4D65);
 
-  /// Light shadow — subtle lighter highlight
-  static const Color shadowLight = Color(0xFF22263A);
+  // Status colors
+  static const Color success = Color(0xFF00C48C);
+  static const Color warning = Color(0xFFFFB946);
+  static const Color error = Color(0xFFFF6B6B);
+  static const Color info = Color(0xFF5B9BFF);
 
-  // ─── Primary Brand Palette ─────────────────────────────────────────────────
-  static const Color primaryViolet = Color(0xFF6C63FF);
-  static const Color primaryIndigo = Color(0xFF4F46E5);
-  static const Color primaryCyan = Color(0xFF06B6D4);
-  static const Color primaryMagenta = Color(0xFFD946EF);
+  // XP & Gamification
+  static const Color xpGold = Color(0xFFFFD700);
+  static const Color xpOrange = Color(0xFFFF8C00);
+  static const Color levelPurple = Color(0xFFBB86FC);
+  static const Color streakFire = Color(0xFFFF6B35);
 
-  // ─── Accent ─────────────────────────────────────────────────────────────────
-  static const Color accentGold = Color(0xFFF59E0B);
-  static const Color accentEmerald = Color(0xFF10B981);
-  static const Color accentRose = Color(0xFFF43F5E);
-
-  /// Electric Coral — replaces warm orange; bridges magenta & rose family
-  static const Color accentCoral = Color(0xFFFF6B9D);
-  static const Color accentPurple = Color(0xFFA855F7);
-
-  // ─── Gradients ──────────────────────────────────────────────────────────────
+  // Gradient definitions
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [primaryViolet, primaryCyan],
+    colors: [Color(0xFF6C63FF), Color(0xFF4ECDC4)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  static const LinearGradient violetGradient = LinearGradient(
-    colors: [primaryViolet, primaryMagenta],
+  static const LinearGradient accentGradient = LinearGradient(
+    colors: [Color(0xFF00D4AA), Color(0xFF00B4D8)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  static const LinearGradient goldGradient = LinearGradient(
-    colors: [Color(0xFFF59E0B), Color(0xFFFFD166)],
+  static const LinearGradient warmGradient = LinearGradient(
+    colors: [Color(0xFFFF8C00), Color(0xFFFF6B35)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  static const LinearGradient coralGradient = LinearGradient(
-    colors: [accentCoral, primaryMagenta],
+  static const LinearGradient coolGradient = LinearGradient(
+    colors: [Color(0xFF667eea), Color(0xFF764ba2)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  static const LinearGradient emeraldGradient = LinearGradient(
-    colors: [Color(0xFF10B981), Color(0xFF06B6D4)],
+  static const LinearGradient surfaceGradient = LinearGradient(
+    colors: [Color(0xFF151937), Color(0xFF1A1E3D)],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
+  static const LinearGradient cardGradient = LinearGradient(
+    colors: [Color(0xFF1C2044), Color(0xFF151937)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  static const LinearGradient roseGradient = LinearGradient(
-    colors: [Color(0xFFF43F5E), Color(0xFFD946EF)],
+  static const LinearGradient energyGradient = LinearGradient(
+    colors: [Color(0xFFf093fb), Color(0xFFf5576c)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  static const LinearGradient metaverseGradient = LinearGradient(
-    colors: [primaryViolet, primaryMagenta, primaryCyan],
+  static const LinearGradient oceanGradient = LinearGradient(
+    colors: [Color(0xFF4facfe), Color(0xFF00f2fe)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  static const LinearGradient darkGlassGradient = LinearGradient(
-    colors: [Color(0x201A1D2E), Color(0x101A1D2E)],
+  static const LinearGradient sunsetGradient = LinearGradient(
+    colors: [Color(0xFFfa709a), Color(0xFFfee140)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  // ─── Text ───────────────────────────────────────────────────────────────────
-  static const Color textPrimary = Color(0xFFF0F2FF);
-  static const Color textSecondary = Color(0xFFA0A8C8);
-  static const Color textMuted = Color(0xFF5A6080);
-  static const Color textDisabled = Color(0xFF353856);
-
-  // ─── Status ─────────────────────────────────────────────────────────────────
-  static const Color success = Color(0xFF10B981);
-  static const Color warning = Color(0xFFF59E0B);
-  static const Color error = Color(0xFFF43F5E);
-  static const Color info = Color(0xFF6C63FF);
-
-  // ─── Glass / Border ─────────────────────────────────────────────────────────
-  static const Color glassWhite = Color(0x14FFFFFF);
-  static const Color glassBorder = Color(0x20FFFFFF);
-  static const Color glassHighlight = Color(0x30FFFFFF);
-
-  // Convenience aliases (backward compat)
-  static const Color primaryElectricBlue = primaryViolet;
-  static const Color primaryNeonPurple = primaryIndigo;
-
-  /// Backward-compat alias — use accentCoral for new code
-  static const Color accentOrange = accentCoral;
+  static const LinearGradient forestGradient = LinearGradient(
+    colors: [Color(0xFF11998e), Color(0xFF38ef7d)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 }
