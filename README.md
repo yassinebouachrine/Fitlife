@@ -29,7 +29,7 @@
 ##  Getting Started
 
 ```bash
-git clone [https://github.com/yassinebouachrine/Fitlife.git]
+git clone -https://github.com/yassinebouachrine/Fitlife.git)
 cd gym-app
 flutter pub get
 cp .env.example .env
