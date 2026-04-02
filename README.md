@@ -48,23 +48,6 @@ npm run dev
 terminal2 :
 flutter run
 ```
-
----
-
-##  Project Structure
-
-```
-lib/
-├── core/           # Theme, shared widgets, navigation
-├── features/
-│   ├── ai_coach/   # Gemini AI logic & chat UI
-│   ├── auth/       # Login & register
-│   ├── nutrition/  # Food scanner & macro tracking
-│   ├── onboarding/ # Intro experience
-│   └── splash/     # Animated splash screen
-└── main.dart
-```
-
 ---
 
 ## 📄 License
