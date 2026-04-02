@@ -32,7 +32,6 @@
 git clone https://github.com/yassinebouachrine/Fitlife.git
 cd gym-app
 flutter pub get
-cp .env.example .env
 ```
 
 Add your Gemini API key to `.env`:
