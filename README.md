@@ -42,6 +42,10 @@ AI_API_KEY=YOUR_GEMINI_KEY_HERE
 ```
 
 ```bash
+terminal1 :
+cd backend
+npm run dev
+terminal2 :
 flutter run
 ```
 
