@@ -30,15 +30,32 @@ class WorkoutService {
     List<Map<String, dynamic>>? exercises,
   }) async {
     try {
-      final response = await _api.post(
-        ApiEndpoints.workouts,
-        data: {
-          'name': name,
-          if (description != null) 'description': description,
-          if (estimatedDurationMin != null) 'estimated_duration_min': estimatedDurationMin,
-          if (exercises != null) 'exercises': exercises,
-        },
-      );
+      final response = await _api.post(ApiEndpoints.workouts, data: {
+        'name': name,
+        if (description != null) 'description': description,
+        if (estimatedDurationMin != null) 'estimated_duration_min': estimatedDurationMin,
+        if (exercises != null) 'exercises': exercises,
+      });
+      return response.data;
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  Future<Map<String, dynamic>> updateWorkout({
+    required dynamic id,
+    String? name,
+    String? description,
+    int? estimatedDurationMin,
+    List<Map<String, dynamic>>? exercises,
+  }) async {
+    try {
+      final response = await _api.put('${ApiEndpoints.workouts}/$id', data: {
+        if (name != null) 'name': name,
+        if (description != null) 'description': description,
+        if (estimatedDurationMin != null) 'estimated_duration_min': estimatedDurationMin,
+        if (exercises != null) 'exercises': exercises,
+      });
       return response.data;
     } on DioException catch (e) {
       throw _handleError(e);
@@ -55,12 +72,8 @@ class WorkoutService {
   }
 
   String _handleError(DioException e) {
-    if (e.type == DioExceptionType.connectionError) {
-      return 'Cannot connect to server.';
-    }
-    if (e.type == DioExceptionType.badResponse) {
-      return e.response?.data?['message'] ?? 'Server error.';
-    }
+    if (e.type == DioExceptionType.connectionError) return 'Cannot connect to server.';
+    if (e.type == DioExceptionType.badResponse) return e.response?.data?['message'] ?? 'Server error.';
     return 'Network error.';
   }
 }
