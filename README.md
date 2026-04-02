@@ -46,6 +46,7 @@ terminal1 :
   cd backend
   npm run dev
 terminal2 :
+  flutter clean
   flutter run
 ```
 ---
