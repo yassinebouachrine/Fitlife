@@ -2,11 +2,11 @@ class ApiEndpoints {
   // Auth
   static const String login = '/api/auth/login';
   static const String register = '/api/auth/register';
-  static const String profile = '/api/auth/profile';
 
   // User
-  static const String user = '/api/user';
+  static const String profile = '/api/user/profile';
   static const String updateProfile = '/api/user/profile';
+  static const String dashboard = '/api/user/dashboard';
 
   // Workouts
   static const String workouts = '/api/workouts';
@@ -21,7 +21,9 @@ class ApiEndpoints {
   static const String history = '/api/history';
 
   // AI
-  static const String ai = '/api/ai';
+  static const String aiChat = '/api/ai/chat';
+  static const String aiHistory = '/api/ai/history';
+  static const String aiClear = '/api/ai/clear';
 
   // Health
   static const String health = '/api/health';
